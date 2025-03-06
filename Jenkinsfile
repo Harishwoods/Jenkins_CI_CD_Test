@@ -20,6 +20,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying the project...'
+                script {
+                    def fileContent = readFile('python.txt') // Reading python.txt
+                    echo "Content of python.txt:\n${fileContent}"
+                }
             }
         }
     }
