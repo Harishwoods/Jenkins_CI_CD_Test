@@ -1,0 +1,62 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+
+# Step 1: Read Data
+print("[+] Reading CSV File...")
+data = pd.read_csv("data.csv")
+print("[✔] Data Loaded Successfully!")
+
+# Step 2: Exploratory Data Analysis (EDA)
+print("[+] Performing EDA...")
+print(data.info())
+print(data.describe())
+
+# Check Missing Values
+print("Missing Values:\n", data.isnull().sum())
+
+# Visualize Correlation
+plt.figure(figsize=(10, 6))
+sns.heatmap(data.corr(), annot=True, cmap='coolwarm')
+plt.title("Correlation Matrix")
+plt.show()
+
+# Step 3: Outlier Detection
+plt.figure(figsize=(10, 6))
+sns.boxplot(data['Age'])
+plt.title("Outlier Detection - Age")
+plt.show()
+
+# Fill Missing Values with Mean
+data.fillna(data.mean(), inplace=True)
+
+# Step 4: Preprocessing
+X = data.drop("Target", axis=1)
+y = data["Target"]
+
+# Standardization
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+
+# Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Step 5: Logistic Regression Model
+print("[+] Training Logistic Regression Model...")
+model = LogisticRegression()
+model.fit(X_train, y_train)
+print("[✔] Model Trained Successfully!")
+
+# Step 6: Model Evaluation
+print("[+] Evaluating Model...")
+y_pred = model.predict(X_test)
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("Classification Report:\n", classification_report(y_test, y_pred))
+print("Accuracy Score:", accuracy_score(y_test, y_pred))
+
+print("[✔] Data Analysis Completed!")
